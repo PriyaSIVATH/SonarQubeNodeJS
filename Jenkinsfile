@@ -37,6 +37,20 @@ pipeline {
             }
         }
 
+        stage("Quality Gate Status Check"){
+            steps {
+                script {
+                    // timeout(time: 1, unit: 'HOURS') {
+                    timeout(time: 2, unit: 'MINUTES') {  
+                        def qg = waitForQualityGate()
+                        if (qg.status != 'OK') {
+                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                        }    
+                    }  
+                }   
+            }
+        }
+
         // stage('DockerHub Image Push') {
         //     steps {
         //         // One or more steps need to be included within the steps block.
