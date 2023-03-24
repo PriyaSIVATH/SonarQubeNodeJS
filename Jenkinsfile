@@ -10,6 +10,8 @@ pipeline {
         tagName = "ver1.0.0"
         profileDockerHub = "priyasivath"
         scannerHome = tool "SonarScanner-Linux"
+        registryNexus = "192.168.0.155:8085/"
+        registryNexusCredentials = "nexus-repo-manager"
     }
 
     stages {
@@ -50,6 +52,18 @@ pipeline {
                 }   
             }
         }
+
+        stage('Nexus Image Push') {
+            steps {
+                script {
+                    withDockerRegistry(credentialsId: 'nexus-repo-manager', url: 'http://'+ registryNexus) {
+                        sh "docker  tag  ${imageName+':'+tagName}  ${registryNexus+imageName+':'+tagName}"
+                        sh "docker push ${registryNexus+imageName+':'+tagName}" 
+                    }
+                }
+            }
+        }
+
 
         // stage('DockerHub Image Push') {
         //     steps {
