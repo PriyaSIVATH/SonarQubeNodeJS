@@ -64,7 +64,6 @@ pipeline {
             }
         }
 
-
         // stage('DockerHub Image Push') {
         //     steps {
         //         // One or more steps need to be included within the steps block.
@@ -77,6 +76,33 @@ pipeline {
         //     }
         // }
 
+        stage('Sequential Stage - Deployment Server') {
+            agent {
+                label 'deploy-vm'
+                // label 'deployment-agent1'
+            }
+            stages {
+                 // Stopping previous running Docker containers for cleaner Docker run 
+                stage('Stopping Running Containers') {
+                    steps {
+                        sh 'docker ps -f name=mynodejscontainer -q | xargs --no-run-if-empty docker container stop'
+                        sh 'docker container ls -a -fname=mynodejscontainer -q | xargs -r docker container rm'
+                    }
+                }
+                stage('Docker Container Run') {
+                    steps {
+                        script {
+                            // withDockerRegistry(credentialsId: 'nexus-repo-manager', url: 'http://192.168.0.155:8085/') {
+                             // sh 'docker run -d -p 3000:3000 --rm --name nodejsapp 192.168.0.155:8085/mypython-flaskapp:v1.1.0'
+                            withDockerRegistry(credentialsId: 'nexus-repo-manager', url: 'http://'+ registryNexus) {
+                                sh 'docker run -d -p 3000:3000 --rm --name mynodejscontainer ' + registryNexus + imageName + ':${tagName}' 
+                            }   
+                        }
+                    }
+                }
+            }
+
+        }
 
     }
 
