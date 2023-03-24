@@ -7,7 +7,8 @@ pipeline {
 
     environment {
         imageName = "mynodejsapp"
-        tagName = "ver1.0.0"
+        // tagName = "ver1.0.0"
+        tagName = "ver1.0.${BUILD_NUMBER}"
         profileDockerHub = "priyasivath"
         scannerHome = tool "SonarScanner-Linux"
         registryNexus = "192.168.0.155:8085/"
