@@ -5,6 +5,11 @@ pipeline {
         // label 'docker-agent1'
     }
 
+    environment {
+        imageName = "mynodejsapp"
+        tagName = "ver1.0.0"
+    }
+
     stages {
         stage('CheckOut SCM') {
             steps {
@@ -13,8 +18,10 @@ pipeline {
             }
         }
 
+        
+
+
+
     }
-
-
 
 }
