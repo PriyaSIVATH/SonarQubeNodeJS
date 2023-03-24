@@ -18,7 +18,12 @@ pipeline {
             }
         }
 
-        
+        stage('Image Build') {
+            steps {
+                // One or more steps need to be included within the steps block.
+                sh "docker build -t  ${imageName+':'+tagName} ."
+            }
+        }
 
 
 
